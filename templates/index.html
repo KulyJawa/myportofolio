@@ -1,99 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ name }} - Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_education' %}">Education</a>
-            </nav>
-        </div>
-    </header>
+{% extends 'base.html' %}
 
-    <main>
-        <!--Section About me-->
-        <section class="hero" id="profile">
-            <div class="container hero-grid">
-                <div class="hero-identity">
-                    <p class="hero-kicker">Information System &middot; Universitas Indonesia</p>
-                    <h1>{{ name }}</h1>
-                </div>
-                <div class="hero-photo">
-                    <div class="photo-block"></div>
-                    <img class="avatar" src="/static/img/GambarEmil.png" alt="Photo of {{ name }}">
-                </div>
-                <div class="hero-details">
-                    <p class="bio">{{ bio }}</p>
-                    <dl class="meta-list">
-                        <div class="meta-row">
-                            <dt>NPM</dt>
-                            <dd>{{ npm }}</dd>
-                        </div>
-                        <div class="meta-row">
-                            <dt>Program</dt>
-                            <dd>{{ study_program }}</dd>
-                        </div>
-                    </dl>
-                    <div class="social-links">
-                        <a href="https://github.com/KulyJawa" class="social-link">GitHub</a>
-                        <a href="https://www.linkedin.com/in/emil-ananta-kautsar-4701a3380/" class="social-link">LinkedIn</a>
-                        <a href="kulyjawa58@gmail.com" class="social-link">Email</a>
+{% block meta %}
+<title>{{ name }} - Portfolio</title>
+{% endblock meta %}
+
+{% block content %}
+<main>
+    <!-- Section About Me -->
+    <section class="hero" id="profile">
+        <div class="container hero-grid">
+            <div class="hero-identity">
+                <p class="hero-kicker">{{ study_program }} &middot; Universitas Indonesia</p>
+                <h1>{{ name }}</h1>
+            </div>
+            <div class="hero-photo">
+                <div class="photo-block"></div>
+                <img class="avatar" src="/static/img/GambarEmil.png" alt="Photo of {{ name }}">
+            </div>
+            <div class="hero-details">
+                <p class="bio">{{ bio }}</p>
+                <dl class="meta-list">
+                    <div class="meta-row">
+                        <dt>NPM</dt>
+                        <dd>{{ npm }}</dd>
                     </div>
+                    <div class="meta-row">
+                        <dt>Program</dt>
+                        <dd>{{ study_program }}</dd>
+                    </div>
+                </dl>
+                <div class="social-links">
+                    <a href="https://github.com/KulyJawa" class="social-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="https://www.linkedin.com/in/emil-ananta-kautsar-4701a3380/" class="social-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="mailto:kulyjawa58@gmail.com" class="social-link">Email</a>
                 </div>
             </div>
-        </section>
-
-        <!-- Section baru (Skills, Tugas 1) -->
-         <section class="skills-section" id="skills">
-            <div class="container">
-                <h2 class="section-title">Core Skills</h2>
-                <div class="skills-grid">
-                    <article class="skill-card">
-                        <div class="skill-badge">Programming</div>
-                        <h3 class="skill-name">Python</h3>
-                        <p class="skill-desc">Pengembangan logiga algorithm, analisa pemecahan masalah komputasi, pembuatan aplikasi web dasar menggunakan Django.</p>
-                        <div class="skill-level">
-                            <span>Intermediate</span>
-                        </div>
-                    </article>
-
-                    <article class="skill-card">
-                        <div class="skill-badge">Web Tech</div>
-                        <h3 class="skill-name">HTML</h3>
-                        <p class="skill-desc">Penyusunan arsitektur website modern berbabis HTML5 semantik yang terstruktur, dan aksesible bagi screen reader</p>
-                        <div class="skill-level">
-                            <span>Semantic Markup</span>
-                        </div>
-                    </article>
-
-                    <article class="skill-card">
-                        <div class="skill-badge">Language</div>
-                        <h3 class="skill-name">English</h3>
-                        <p class="skill-desc">Kemampuan komunikasi teknis, membaca dokumentasi pemrograman internasional, kolaborasi multibahasa</p>
-                        <div class="skill-level">
-                            <span>Professional Working</span>
-                        </div>
-                    </article>
-                </div>
-            </div>
-         </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
-    </footer>
-</body>
-</html>
+    </section>
+
+    <!-- Section Skills -->
+    <section class="skills-section" id="skills">
+        <div class="container">
+            <h2 class="section-title">Core Skills</h2>
+            <div class="skills-grid">
+                <article class="skill-card">
+                    <div class="skill-badge">Programming</div>
+                    <h3 class="skill-name">Python</h3>
+                    <p class="skill-desc">Pengembangan logika algoritma, analisis pemecahan masalah komputasi, serta pembuatan aplikasi web dasar menggunakan Django.</p>
+                    <div class="skill-level"><span>Intermediate</span></div>
+                </article>
+                <article class="skill-card">
+                    <div class="skill-badge">Web Tech</div>
+                    <h3 class="skill-name">HTML</h3>
+                    <p class="skill-desc">Penyusunan arsitektur web berbasis HTML5 semantik yang terstruktur, ramah SEO, dan aksesibel bagi pengguna.</p>
+                    <div class="skill-level"><span>Semantic Markup</span></div>
+                </article>
+                <article class="skill-card">
+                    <div class="skill-badge">Language</div>
+                    <h3 class="skill-name">English</h3>
+                    <p class="skill-desc">Kemampuan komunikasi teknis, membaca dokumentasi pemrograman internasional, serta kolaborasi multibahasa.</p>
+                    <div class="skill-level"><span>Professional Working</span></div>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock content %}

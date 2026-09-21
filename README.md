@@ -39,3 +39,20 @@ AI Disclosure:
 Dalam pengerjaan tugas 2 ini, saya menggunakan bantuan AI (gemini) untuk bertanya terkait menyelesaikan tugas ini.
  -Bertanya tentang styling css yang simple 
  -Meminta perbaikan/koreksi code saat menambahkan code hasil tutorial 2
+
+
+
+ ### Tugas 3
+
+ 1.Karena dengan ModelForm, saya bisa secara otomatis mengubah atribut pada model menjadi input form HTML sesuai tipe data, contoh nya batas maksimum karakter dan jenis inputnya. Lalu untuk kewajiban {% csrf_token %} ini gunanya untuk memastikan kalau permintaan POST itu asalnya dari form resmi dari situs saya sendiri. Hal ini dapat mencegah permintaan palsu dari pihak lain untuk mengubah atau memanipulasi data tanpa izin.
+
+2.Mengapa JSON lebih disukai dalam pengembangan aplikasi web modern dibandingkan XML? itu karena JSON formatnya lebih ringkas (tidak memerlukan tag pembuka dan penutup), tidak seperti XML. Ini membuat ukuran datanya lebih kecil, dan proses pengiriman data bisa lebih cepat. Struktur key value nya JSON juga lebih mudah dibaca dan dipahami.
+
+3.Alur pengembalian data portofolio dalam bentuk JSON dan alasan kenapa perlu proses serialization:
+    jadi yang pertama itu dari klien yang mengirim permintaan HTTP GET ke endpoint /api/education/. Django lalu mencocokan URL nya dan menjalankan view get_education_json. View akan mengambil data pendidikan dari basis data lewat Django ORM dengan Education.object.all(). Data itu akan diubah menjadi format JSON melalui serializers.serialize('json', educations) dan dikirim ke klien dengan HttpResponse.
+    Untuk proses serialization ini diperlukan karena objek model django adalah objek Python yang kompleks dan tidak bisa dikirim secara langsung lewat HTTP. 
+
+AI Disclosure:
+Dalam tugas 3 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait menyelesaikan tugas ini.
+    - Meminta bantuan AI untuk mengecek ulang code yang sudah kubuat
+    - Meminta AI untuk meyakinkan apakah yang sudah kubuat ini sudah sesuai dengan perintah dan menyesuaikannya.

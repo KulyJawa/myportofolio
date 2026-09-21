@@ -55,4 +55,4 @@ Dalam pengerjaan tugas 2 ini, saya menggunakan bantuan AI (gemini) untuk bertany
 AI Disclosure:
 Dalam tugas 3 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait menyelesaikan tugas ini.
     - Meminta bantuan AI untuk mengecek ulang code yang sudah kubuat
-    - Meminta AI untuk meyakinkan apakah yang sudah kubuat ini sudah sesuai dengan perintah dan menyesuaikannya.
+    - Meminta AI untuk meyakinkan apakah yang sudah kubuat ini sudah sesuai dengan perintah untuk menyesuaikannya.

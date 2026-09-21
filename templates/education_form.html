@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block meta %}
-<title>Tambah Riwayat Pendidikan - {{ name }}</title>
+<title>{% if education %}Edit Riwayat Pendidikan{% else %}Tambah Riwayat Pendidikan{% endif %} - {{ name }}</title>
 {% endblock meta %}
 
 {% block content %}
 <main>
     <section class="experience-section">
         <div class="container">
-            <h1>Tambah Riwayat Pendidikan</h1>
-            <form method="post" action="{% url 'main:create_education' %}" class="project-form">
+            <h1>{% if education %}Edit Riwayat Pendidikan{% else %}Tambah Riwayat Pendidikan{% endif %}</h1>
+            <form method="post" class="project-form">
                 {% csrf_token %}
                 {% for field in form %}
                 <div class="form-group">
@@ -20,7 +20,7 @@
                     {% endfor %}
                 </div>
                 {% endfor %}
-                <button type="submit" class="button">Simpan</button>
+                <button type="submit" class="button">{% if education %}Simpan Perubahan{% else %}Tambah Pendidikan{% endif %}</button>
                 <a href="{% url 'main:show_education' %}" class="button button-secondary">Batal</a>
             </form>
         </div>

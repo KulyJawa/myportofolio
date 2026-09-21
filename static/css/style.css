@@ -533,3 +533,15 @@ h1, .brand {
     gap: 0.75rem;
     margin-top: 1.25rem;
 }
+
+.project-card-actions {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.button-edit {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.85rem;
+}

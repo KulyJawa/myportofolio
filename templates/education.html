@@ -39,14 +39,19 @@
                             <p class="education-desc">{{ edu.description }}</p>
                         {% endif %}
 
-                        {% include "components/education_star.html" with edu=edu %}
-
                         {% if user.is_superuser %}
-                        <div class="project-card-actions">
-                            <a href="{% url 'main:edit_education' edu.id %}" class="button button-secondary button-edit">Edit</a>
-                            {% include "components/education_delete_modal.html" with edu=edu %}
-                        </div>
+                            {% include "components/education_star.html" with edu=edu %}
                         {% endif %}
+                        
+                        <div class="project-card-actions">
+                            {% if user.is_superuser or is_editor %}
+                                <a href="{% url 'main:edit_education' edu.id %}" class="button button-secondary button-edit">Edit</a>
+                            {% endif %}
+                            
+                            {% if user.is_superuser %}
+                                {% include "components/education_delete_modal.html" with edu=edu %}
+                            {% endif %}
+                        </div>
                     </article>
                 {% empty %}
                     {% if query %}

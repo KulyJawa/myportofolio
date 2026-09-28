@@ -35,12 +35,17 @@ def show_education(request):
     education_list = [item.object for item in edu_objects]
 
     query = request.GET.get("q", "").strip()
+    is_editor_user = is_editor(request.user) if request.user.is_authenticated else False
     context = {
         "name": "Emil Ananta Kautsar",
         "education_list": education_list,
         "query": query,
+        "is_editor": is_editor_user,
     }
     return render(request, "education.html", context)
+
+def is_editor(user):
+    return user.groups.filter(name='Editor').exists()
 
 # View Menambah Education
 @login_required(login_url="/login/")
@@ -62,7 +67,11 @@ def create_education(request):
     return render(request, "education_form.html", context)
 
 # View Mengubah(update) Education
+@login_required(login_url="/login/")
 def edit_education(request, education_id):
+    if not (request.user.is_superuser or is_editor(request.user)):
+        raise PermissionDenied
+
     education = get_object_or_404(Education, pk=education_id)
     form = EducationForm(request.POST or None, instance=education)
 
@@ -88,6 +97,7 @@ def delete_education(request, education_id):
     if request.method == "POST":
         education.delete()
         messages.success(request, "Riwayat pendidikan berhasil dihapus!")
+
     return redirect("main:show_education")
 
 # Endpoint Data Delivery JSON
@@ -146,3 +156,5 @@ def toggle_star(request, education_id):
             education.starred_by.add(request.user)
 
     return redirect("main:show_education")
+
+

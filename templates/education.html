@@ -11,9 +11,11 @@
             <p class="section-kicker">Latar Belakang Akademik</p>
             <div class="project-header">
                 <h1>Education</h1>
+            {% if user.is_superuser %}
                 <a href="{% url 'main:create_education' %}" class="button project-add-button">
                     <span aria-hidden="true">+</span> Tambah Pendidikan
                 </a>
+            {% endif %}
             </div>
 
             <!-- Form Pencarian -->
@@ -36,10 +38,15 @@
                         {% if edu.description %}
                             <p class="education-desc">{{ edu.description }}</p>
                         {% endif %}
+
+                        {% include "components/education_star.html" with edu=edu %}
+
+                        {% if user.is_superuser %}
                         <div class="project-card-actions">
                             <a href="{% url 'main:edit_education' edu.id %}" class="button button-secondary button-edit">Edit</a>
                             {% include "components/education_delete_modal.html" with edu=edu %}
                         </div>
+                        {% endif %}
                     </article>
                 {% empty %}
                     {% if query %}

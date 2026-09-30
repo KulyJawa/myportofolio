@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main.forms import EducationForm
 from main.models import Education, Experience
@@ -8,6 +9,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 import datetime
 
 def show_main(request):
@@ -30,17 +32,13 @@ def show_experience(request):
 
 # View Halaman Education dengan Filter & Deserialisasi
 def show_education(request):
-    json_response = get_education_json(request)
-    edu_objects = serializers.deserialize("json", json_response.content.decode("utf-8"))
-    education_list = [item.object for item in edu_objects]
-
     query = request.GET.get("q", "").strip()
     is_editor_user = is_editor(request.user) if request.user.is_authenticated else False
     context = {
         "name": "Emil Ananta Kautsar",
-        "education_list": education_list,
         "query": query,
         "is_editor": is_editor_user,
+        "form": EducationForm(),  # Ditambahkan untuk modal form tambah education nantinya
     }
     return render(request, "education.html", context)
 
@@ -103,11 +101,31 @@ def delete_education(request, education_id):
 # Endpoint Data Delivery JSON
 def get_education_json(request):
     query = request.GET.get("q", "").strip()
-    educations = Education.objects.all()
+    educations = Education.objects.prefetch_related('starred_by').all()
+    
     if query:
         educations = educations.filter(institution__icontains=query)
-    data = serializers.serialize("json", educations, use_natural_foreign_keys=True)
-    return HttpResponse(data, content_type="application/json")
+
+    data = []
+    for edu in educations:
+        starred_users = edu.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+        
+        data.append({
+            "pk": str(edu.id),
+            "fields": {
+                "institution": edu.institution,
+                "degree": edu.degree,
+                "start_year": edu.start_year,
+                "end_year": edu.end_year,
+                "description": edu.description,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+    return JsonResponse(data, safe=False)
 
 def register(request):
     form = UserCreationForm(request.POST or None)
@@ -157,4 +175,19 @@ def toggle_star(request, education_id):
 
     return redirect("main:show_education")
 
+@require_POST
+def create_education_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan riwayat pendidikan."},
+            status=403,
+        )
 
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        project = form.save()
+        return JsonResponse(
+            {"message": "Education berhasil ditambahkan.", "pk": str(project.id)},
+            status=201,
+        )
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)

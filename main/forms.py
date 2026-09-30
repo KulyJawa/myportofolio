@@ -1,5 +1,7 @@
 from django.forms import ModelForm, TextInput, Textarea
 from main.models import Education
+from django.core.exceptions import ValidationError
+from django.utils.html import strip_tags
 
 class EducationForm(ModelForm):
     class Meta:
@@ -19,3 +21,21 @@ class EducationForm(ModelForm):
             "end_year": TextInput(attrs={"placeholder": "misal: 2029 atau Present"}),
             "description": Textarea(attrs={"placeholder": "Tuliskan fokus studi atau pencapaian...", "rows": 3}),
         }
+
+    def clean_institution(self):
+        institution = strip_tags(self.cleaned_data.get("institution", "")).strip()
+        if not institution:
+            raise ValidationError("Nama institusi tidak boleh hanya berisi tag HTML.")
+        return institution
+    
+    def clean_degree(self):
+        return strip_tags(self.cleaned_data.get("degree", "")).strip()
+    
+    def clean_start_year(self):
+        return strip_tags(self.cleaned_data.get("start_year", "")).strip()
+
+    def clean_end_year(self):
+        return strip_tags(self.cleaned_data.get("end_year", "")).strip()
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data.get("description", "")).strip()

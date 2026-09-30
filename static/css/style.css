@@ -447,7 +447,7 @@ h1, .brand {
     color: white;
 }
 
-.project-header {
+.education-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -455,17 +455,17 @@ h1, .brand {
     margin-bottom: 1.5rem;
 }
 
-.project-header h1 {
+.education-header h1 {
     margin-bottom: 0;
 }
 
-.project-search {
+.education-search {
     display: flex;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
-.project-search_input {
+.education-search_input {
     width: 100%;
     padding: 0.7rem;
     border: 1px solid var(--line);
@@ -474,13 +474,13 @@ h1, .brand {
     font: inherit;
 }
 
-.project-card-actions {
+.education-card-actions {
     margin-top: 1rem;
     display: flex;
 }
 
 /* Modal Popover */
-.project-delete-modal {
+.education-delete-modal {
     display: none;
     position: fixed;
     inset: 0;
@@ -493,11 +493,11 @@ h1, .brand {
     justify-content: center;
 }
 
-.project-delete-modal:popover-open {
+.education-delete-modal:popover-open {
     display: flex;
 }
 
-.project-delete-modal_backdrop {
+.education-delete-modal_backdrop {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -506,7 +506,7 @@ h1, .brand {
     background: rgba(28, 25, 23, 0.58);
 }
 
-.project-delete-modal_content {
+.education-delete-modal_content {
     position: relative;
     z-index: 101;
     width: min(100%, 480px);
@@ -517,7 +517,7 @@ h1, .brand {
     box-shadow: 6px 6px 0 var(--ink);
 }
 
-.project-delete-modal_close {
+.education-delete-modal_close {
     position: absolute;
     top: 0.75rem;
     right: 1rem;
@@ -527,14 +527,14 @@ h1, .brand {
     cursor: pointer;
 }
 
-.project-delete-modal_actions {
+.education-delete-modal_actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     margin-top: 1.25rem;
 }
 
-.project-card-actions {
+.education-card-actions {
     margin-top: 1.25rem;
     display: flex;
     align-items: center;
@@ -566,4 +566,151 @@ h1, .brand {
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.25);
     font-size: 0.8rem;
+}
+
+/* toast */
+.toast-component {
+    position: fixed;
+    inset: auto 2rem 2rem auto;
+    margin: 0;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(28, 25, 23, 0.15);
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--paper);
+    border: 1px solid var(--line);
+    color: inherit;
+}
+
+.toast-component:popover-open {
+    display: flex;
+}
+
+.toast-hidden {
+    opacity: 0;
+    transform: translateY(150%);
+    pointer-events: none;
+}
+
+.toast-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Modifikasi border kiri berdasarkan tipe notifikasi */
+.toast-success { border-left: 4px solid #22c55e; }
+.toast-error { border-left: 4px solid #b42318; }
+.toast-normal { border-left: 4px solid var(--accent); }
+
+.hide {
+    display: none !important;
+}
+
+.education-form-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+    background: transparent;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+}
+
+.education-form-modal:popover-open {
+    display: flex;
+}
+
+.education-form-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    background: rgba(28, 25, 23, 0.58);
+    cursor: default;
+}
+
+.education-form-modal__content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 640px);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 1rem 3rem rgba(28, 25, 23, 0.22);
+}
+
+.education-form-modal__content h2 {
+    margin: 0 2.5rem 1.25rem 0;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: 1.5rem;
+}
+
+.education-form-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.education-form-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .education-form-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .education-form-modal__content {
+        width: 100%;
+        max-height: 90vh;
+        padding: 1.25rem;
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .education-form-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .education-form-modal__actions .button {
+        width: 100%;
+        text-align: center;
+    }
 }

@@ -1,6 +1,4 @@
 from django.contrib import messages
-from django.core import serializers
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main.forms import EducationForm
@@ -30,7 +28,7 @@ def show_experience(request):
     }
     return render(request, "experience.html", context)
 
-# View Halaman Education dengan Filter & Deserialisasi
+# Render kerangka halaman; kartu diambil dari endpoint JSON melalui JavaScript.
 def show_education(request):
     query = request.GET.get("q", "").strip()
     is_editor_user = is_editor(request.user) if request.user.is_authenticated else False
@@ -38,7 +36,7 @@ def show_education(request):
         "name": "Emil Ananta Kautsar",
         "query": query,
         "is_editor": is_editor_user,
-        "form": EducationForm(),  # Ditambahkan untuk modal form tambah education nantinya
+        "form": EducationForm(),
     }
     return render(request, "education.html", context)
 
@@ -101,7 +99,7 @@ def delete_education(request, education_id):
 # Endpoint Data Delivery JSON
 def get_education_json(request):
     query = request.GET.get("q", "").strip()
-    educations = Education.objects.prefetch_related('starred_by').all()
+    educations = Education.objects.prefetch_related('starred_by').order_by('institution', 'id')
     
     if query:
         educations = educations.filter(institution__icontains=query)
@@ -163,15 +161,28 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
-@login_required(login_url="/login/")
+@require_POST
 def toggle_star(request, education_id):
+    wants_json = "application/json" in request.headers.get("Accept", "")
+    if not request.user.is_authenticated:
+        if wants_json:
+            return JsonResponse({"message": "Silakan login untuk memberi star."}, status=403)
+        return redirect("main:login")
+
     education = get_object_or_404(Education, pk=education_id)
 
-    if request.method == "POST":
-        if request.user in education.starred_by.all():
-            education.starred_by.remove(request.user)
-        else:
-            education.starred_by.add(request.user)
+    is_starred = education.starred_by.filter(pk=request.user.pk).exists()
+    if is_starred:
+        education.starred_by.remove(request.user)
+    else:
+        education.starred_by.add(request.user)
+
+    if wants_json:
+        return JsonResponse({
+            "is_starred": not is_starred,
+            "star_count": education.starred_by.count(),
+            "message": "Star dihapus." if is_starred else "Star ditambahkan.",
+        })
 
     return redirect("main:show_education")
 
@@ -185,9 +196,9 @@ def create_education_ajax(request):
 
     form = EducationForm(request.POST)
     if form.is_valid():
-        project = form.save()
+        education = form.save()
         return JsonResponse(
-            {"message": "Education berhasil ditambahkan.", "pk": str(project.id)},
+            {"message": "Riwayat pendidikan berhasil ditambahkan.", "pk": str(education.id)},
             status=201,
         )
     return JsonResponse({"errors": form.errors.get_json_data()}, status=400)

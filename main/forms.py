@@ -29,13 +29,22 @@ class EducationForm(ModelForm):
         return institution
     
     def clean_degree(self):
-        return strip_tags(self.cleaned_data.get("degree", "")).strip()
+        degree = strip_tags(self.cleaned_data.get("degree", "")).strip()
+        if not degree:
+            raise ValidationError("Jenjang / jurusan tidak boleh kosong setelah tag HTML dibersihkan.")
+        return degree
     
     def clean_start_year(self):
-        return strip_tags(self.cleaned_data.get("start_year", "")).strip()
+        start_year = strip_tags(self.cleaned_data.get("start_year", "")).strip()
+        if not start_year:
+            raise ValidationError("Tahun mulai tidak boleh kosong setelah tag HTML dibersihkan.")
+        return start_year
 
     def clean_end_year(self):
-        return strip_tags(self.cleaned_data.get("end_year", "")).strip()
+        end_year = strip_tags(self.cleaned_data.get("end_year", "")).strip()
+        if not end_year:
+            raise ValidationError("Tahun selesai tidak boleh kosong setelah tag HTML dibersihkan.")
+        return end_year
 
     def clean_description(self):
-        return strip_tags(self.cleaned_data.get("description", "")).strip()
+        return strip_tags(self.cleaned_data.get("description") or "").strip()

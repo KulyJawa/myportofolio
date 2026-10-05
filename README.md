@@ -63,3 +63,17 @@ Dalam tugas 3 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait m
 AI Disclosure:
 Dalam tugas 3 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait menyelesaikan tugas ini.
     - Meminta AI untuk membantu memahami maksud dari permintaan soal nya ("Bantu aku untuk memahami permintaan tugas 4 ini, dan arahkan alur pengerjaanya").
+
+
+### Tugas 5
+1. Apa itu debouncing dan mengapa penting untuk pencarian AJAX? 
+    - Debouncing adalah teknik menunda pemanggilan fungsi sampai pengguna berhenti melakukan suatu aktivitas selama waktu tertentu. Pada pencarian Education, permintaan `fetch()` baru dikirim setelah pengguna berhenti mengetik selama 300 milidetik. Setiap kali ada ketikan baru, timer sebelumnya dibatalkan dan dimulai lagi. Contohnya, ketika mengetik "Indonesia" dengan cepat, aplikasi tidak harus mengirim satu permintaan untuk setiap huruf. Ini mengurangi permintaan ke server dan pekerjaan pencarian di database. Selain debounce, `AbortController` membatalkan fetch sebelumnya dan nomor permintaan memastikan respons lama tidak menimpa hasil pencarian terbaru.
+2. Apa fungsi `await` ketika menggunakan `fetch()`? Apa yang terjadi tanpa `await`?
+    - `fetch()` mengembalikan sebuah Promise, yaitu objek yang mewakili hasil operasi yang belum tentu selesai. `await fetch(url)` menunda kelanjutan fungsi `async` tersebut sampai Promise berhasil atau gagal, tanpa menghentikan interaksi seluruh halaman. Setelah berhasil, hasilnya adalah objek `Response`. Kita masih perlu `await response.json()` karena pembacaan dan pengubahan isi respons menjadi data JavaScript juga bersifat asinkron. Jika menulis `const response = fetch(url)` tanpa `await`, variabel `response` berisi Promise, sehingga tidak bisa langsung diperlakukan sebagai objek Response, misalnya dengan memanggil `response.json()`. Tanpa `await`, operasi tetap dapat berjalan jika hasilnya ditangani dengan `.then()` dan `.catch()`. Status HTTP seperti 400 dan 403 juga harus diperiksa lewat `response.ok` atau `response.status`, karena `fetch()` tidak otomatis menolak Promise hanya karena status HTTP error.
+3. Apa itu XSS dan mengapa penampilan data melalui JavaScript perlu perhatian khusus?
+    - XSS (Cross-Site Scripting) terjadi ketika input yang tidak tepercaya diproses sebagai kode aktif oleh browser. Misalnya, `<img src="x" onerror="alert('XSS!')">` dapat menjalankan JavaScript jika dimasukkan langsung ke `innerHTML`. Template Django secara default melakukan autoescaping pada variabel HTML. Perlindungan itu tidak otomatis diterapkan ketika JavaScript merakit HTML dari respons JSON. Jadi, AJAX sendiri bukan penyebab XSS; risikonya muncul dari cara data dimasukkan ke halaman. Pada halaman Education, nilai teks dalam HTML kartu melewati `escapeHtml()`, sedangkan label tombol, pesan error, dan toast memakai `textContent`. Di server, `EducationForm` membersihkan input memakai `strip_tags()` pada method `clean_<field>`. Field wajib yang menjadi kosong setelah pembersihan ditolak. Pembersihan server adalah lapisan tambahan, bukan pengganti escaping saat menampilkan data, termasuk data lama di database.
+
+AI Disclosure:
+Dalam tugas 5 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait penyelesaian tugas ini.
+    - memberikan konteks dari permintaan soal, lalu meminta untuk memberikan materi tentang tutorial 5 dan tugas 5, kemudian meminta untuk memberitahu cara mengimplementasikannya.
+    - meminta untuk memperbaiki code yang error saat sedang debugging. ("tolong fix bagian yang salah dan sesuaikan dengan code lainnya")

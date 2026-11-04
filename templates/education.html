@@ -8,11 +8,11 @@
 {% block content %}
 <main>
     <section class="education-section" id="education"
-             data-list-url="{% url 'main:get_education_json' %}"
-             data-create-url="{% url 'main:create_education_ajax' %}"
+             data-list-url="{% url 'api:education-list' %}"
+             data-create-url="{% url 'api:education-list' %}"
              data-edit-url="{% url 'main:edit_education' '00000000-0000-0000-0000-000000000000' %}"
-             data-delete-url="{% url 'main:delete_education' '00000000-0000-0000-0000-000000000000' %}"
-             data-star-url="{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
+             data-delete-url="{% url 'api:education-detail' '00000000-0000-0000-0000-000000000000' %}"
+             data-star-url="{% url 'api:education-star' '00000000-0000-0000-0000-000000000000' %}"
              data-login-url="{% url 'main:login' %}"
              data-superuser="{{ user.is_superuser|yesno:'true,false' }}"
              data-editor="{{ is_editor|yesno:'true,false' }}"

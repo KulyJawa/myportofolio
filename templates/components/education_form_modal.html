@@ -20,7 +20,7 @@
         <h2 id="add-education-modal-title">Tambah Pendidikan Baru</h2>
         <form id="education-form"
               method="post"
-              action="{% url 'main:create_education_ajax' %}"
+              action="{% url 'api:education-list' %}"
               class="education-form">
             {% csrf_token %}
             {% for field in form %}

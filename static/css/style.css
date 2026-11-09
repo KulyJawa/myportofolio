@@ -714,3 +714,169 @@ h1, .brand {
         text-align: center;
     }
 }
+
+/* Pencarian Experience */
+#experience-search-form {
+    margin: 24px 0;
+}
+
+#experience-search-form label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#experience .experience-search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+#experience-search {
+    flex: 1 1 240px;
+    min-width: 0;
+    padding: 14px 16px;
+    border: 1px solid #d8cec1;
+    border-radius: 4px;
+    font: inherit;
+}
+
+#experience-search-form button {
+    padding: 14px 24px;
+    border: 0;
+    border-radius: 4px;
+    background: #25221f;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#experience-feedback[data-error="true"] {
+    color: #b42318;
+}
+
+/* Form tambah/edit Experience */
+#experience-dialog {
+    box-sizing: border-box;
+    width: min(600px, 92vw);
+    max-height: 85vh;
+    margin: auto;
+    padding: 28px;
+    overflow-y: auto;
+    border: 1px solid #d8cec1;
+    border-radius: 8px;
+    background: #faf7f1;
+}
+
+#experience-dialog::backdrop {
+    background: rgb(0 0 0 / 50%);
+}
+
+#experience-form {
+    display: grid;
+    gap: 12px;
+}
+
+#experience-form input,
+#experience-form textarea,
+#experience-form select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8cec1;
+    border-radius: 4px;
+    font: inherit;
+    background: white;
+}
+
+#experience-form-error {
+    color: #b42318;
+    white-space: pre-line;
+}
+
+.experience-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+#experience-form button,
+#experience-add-button,
+#experience .experience-edit-button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 4px;
+    background: #25221f;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#experience-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+#experience-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2000;
+    max-width: min(400px, 85vw);
+    padding: 16px 20px;
+    border-radius: 6px;
+    color: white;
+    background: #23613c;
+    white-space: pre-line;
+}
+
+#experience-toast[data-error="true"] {
+    background: #b42318;
+}
+
+#experience-toast[hidden] {
+    display: none;
+}
+
+#experience .experience-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+#experience .experience-card-actions button,
+#experience .experience-login-link {
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 4px;
+    background: #25221f;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#experience .experience-delete-button {
+    background: #b42318;
+}
+
+#experience .experience-star-button[aria-pressed="true"] {
+    background: #805000;
+}
+
+#experience .experience-card-actions button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+#experience .experience-starred-by {
+    margin-top: 12px;
+    color: #655b50;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}

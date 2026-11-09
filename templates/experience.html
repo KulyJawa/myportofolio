@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Experience - {{ name }}</title>
@@ -6,33 +7,143 @@
 
 {% block content %}
 <main>
-    <section class="experience-section" id="experience">
+    <section
+        class="experience-section"
+        id="experience"
+        data-list-url="{% url 'api:experience-list' %}"
+        data-detail-url="{% url 'api:experience-detail' experience_id='00000000-0000-0000-0000-000000000000' %}"
+        data-star-url="{% url 'api:experience-star' experience_id='00000000-0000-0000-0000-000000000000' %}"
+        data-login-url="{% url 'main:login' %}"
+        data-can-edit="{{ can_edit_experience|yesno:'true,false' }}"
+        data-can-delete="{{ user.is_superuser|yesno:'true,false' }}"
+        data-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+    >
         <div class="container">
             <p class="section-kicker">Perjalanan saya sejauh ini</p>
             <h1>Experience</h1>
-            <div class="experience-grid">
-                {% for experience in experience_list %}
-                <article class="experience-card">
-                    <span class="experience-category">
-                        {{ experience.get_category_display }}
-                    </span>
-                    <h2>{{ experience.title }}</h2>
-                    <p class="experience-description">
-                        {{ experience.description }}
-                    </p>
-                    {% if experience.is_ongoing %}
-                    <p class="experience-status">Sedang berlangsung</p>
-                    {% else %}
-                    <p class="experience-status">Selesai</p>
-                    {% endif %}
-                </article>
-                {% empty %}
-                <p class="empty-state">
-                    Belum ada pengalaman yang ditambahkan.
-                </p>
-                {% endfor %}
-            </div>
+            {% if user.is_superuser %}
+            <button
+                type="button"
+                id="experience-add-button"
+                class="button"
+            >
+                + Tambah Experience
+            </button>
+            {% endif %}
+
+            <form id="experience-search-form" role="search">
+                <label for="experience-search">
+                    Cari berdasarkan judul pengalaman
+                </label>
+
+                <div class="experience-search-row">
+                    <input
+                        type="search"
+                        id="experience-search"
+                        name="title"
+                        placeholder="Contoh: Magang"
+                    >
+                    <button type="submit" class="button">
+                        Cari
+                    </button>
+                </div>
+            </form>
+
+            <p
+                id="experience-feedback"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+            <div
+                id="experience-list"
+                class="experience-grid"
+                aria-busy="false"
+            ></div>
+
+            <noscript>
+                Aktifkan JavaScript untuk menampilkan data Experience.
+            </noscript>
         </div>
     </section>
 </main>
+
+<dialog
+    id="experience-dialog"
+    aria-labelledby="experience-dialog-title"
+>
+    <form id="experience-form">
+        {% csrf_token %}
+
+        <h2 id="experience-dialog-title">Tambah Experience</h2>
+
+        <label for="experience-title">Judul</label>
+        <input
+            id="experience-title"
+            name="title"
+            type="text"
+            maxlength="255"
+            required
+        >
+
+        <label for="experience-description">Deskripsi</label>
+        <textarea
+            id="experience-description"
+            name="description"
+            rows="4"
+            required
+        ></textarea>
+
+        <label for="experience-category">Kategori</label>
+        <select id="experience-category" name="category" required>
+            {% for value, label in experience_categories %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="experience-thumbnail">
+            URL gambar (opsional)
+        </label>
+        <input
+            id="experience-thumbnail"
+            name="thumbnail"
+            type="url"
+            placeholder="https://..."
+        >
+
+        <label for="experience-ended-at">
+            Waktu selesai (opsional)
+        </label>
+        <input
+            id="experience-ended-at"
+            name="ended_at"
+            type="datetime-local"
+            step="1"
+        >
+
+        <small>
+            Kosongkan waktu selesai jika pengalaman masih berlangsung.
+        </small>
+
+        <p id="experience-form-error" role="alert"></p>
+
+        <div class="experience-form-actions">
+            <button type="button" id="experience-cancel">
+                Batal
+            </button>
+
+            <button type="submit" id="experience-save">
+                Simpan
+            </button>
+        </div>
+    </form>
+</dialog>
+
+<div
+    id="experience-toast"
+    role="status"
+    aria-live="polite"
+    hidden
+></div>
+<script src="{% static 'js/experience.js' %}" defer></script>
 {% endblock content %}

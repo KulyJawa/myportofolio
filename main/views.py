@@ -22,9 +22,17 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
+    user = request.user
+
+    can_edit = user.is_authenticated and (
+        user.is_superuser
+        or user.groups.filter(name="Editor").exists()
+    )
+    
     context = {
         "name": "Emil Ananta Kautsar",
-        "experience_list": Experience.objects.all(),
+        "can_edit_experience": can_edit,
+        "experience_categories": Experience.EXPERIENCE_CHOICES,
     }
     return render(request, "experience.html", context)
 

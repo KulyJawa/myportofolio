@@ -41,30 +41,89 @@ class MainTest(TestCase):
         self.assertTrue(self.experience.is_ongoing)
 
     def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(
+            reverse("main:show_experience")
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Part-Time")
-        self.assertContains(response, "Sedang berlangsung")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
+        self.assertContains(response, 'id="experience-list"')
+        self.assertContains(response, "js/experience.js")
+        self.assertContains(
+            response,
+            f'data-list-url="{reverse("api:experience-list")}"',
+        )
+
+        # Data pengalaman sekarang diperiksa melalui API.
+        response = self.client.get(
+            reverse("api:experience-list"),
+            HTTP_ACCEPT="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        records = {
+            item["id"]: item
+            for item in response.json()
+        }
+
+        experience_id = str(self.experience.pk)
+        self.assertIn(experience_id, records)
+
+        item = records[experience_id]
+        self.assertEqual(item["title"], self.experience.title)
+        self.assertEqual(
+            item["description"],
+            self.experience.description,
+        )
+        self.assertEqual(
+            item["category_display"],
+            self.experience.get_category_display(),
+        )
 
     def test_empty_experience_page(self):
+        # Penghapusan ini hanya terjadi di database pengujian.
         Experience.objects.all().delete()
-        response = self.client.get(reverse("main:show_experience"))
 
-        self.assertContains(response, "Belum ada pengalaman yang ditambahkan.")
+        response = self.client.get(
+            reverse("main:show_experience")
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="experience-list"')
+        self.assertContains(response, 'id="experience-feedback"')
+
+        # Daftar kosong dikirim API sebagai [].
+        response = self.client.get(
+            reverse("api:experience-list"),
+            HTTP_ACCEPT="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
-        self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
+        self.experience.save(update_fields=["ended_at"])
 
-        self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Selesai")
-        self.assertNotContains(response, "Sedang berlangsung")
+        response = self.client.get(
+            reverse("api:experience-list"),
+            HTTP_ACCEPT="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        records = {
+            item["id"]: item
+            for item in response.json()
+        }
+
+        experience_id = str(self.experience.pk)
+        self.assertIn(experience_id, records)
+
+        item = records[experience_id]
+        self.assertFalse(item["is_ongoing"])
+        self.assertIsNotNone(item["ended_at"])
 
     def test_education_url_is_accessible(self):
         response = self.client.get(reverse("main:show_education"))

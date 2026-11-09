@@ -77,3 +77,31 @@ AI Disclosure:
 Dalam tugas 5 ini, saya menggunakan bantuan AI (Gemini) untuk bertanya terkait penyelesaian tugas ini.
     - memberikan konteks dari permintaan soal, lalu meminta untuk memberikan materi tentang tutorial 5 dan tugas 5, kemudian meminta untuk memberitahu cara mengimplementasikannya.
     - meminta untuk memperbaiki code yang error saat sedang debugging. ("tolong fix bagian yang salah dan sesuaikan dengan code lainnya")
+
+
+### Tugas 6
+1. REST, JSON, serta perbedaan PUT dan PATCH
+    REST (Representational State Transfer) adalah gaya arsitektur yang memiliki batasan seperti pemisahan client-server, komunikasi stateless, cache, uniform interface, dan sistem berlapis. Resource diidentifikasi melalui URI dan diakses melalui representasinya. Uniform interface juga mencakup pesan yang menjelaskan dirinya sendiri dan navigasi melalui hypermedia.
+    JSON hanya format pertukaran data. API yang mengembalikan JSON belum tentu mengikuti prinsip REST, misalnya jika GET digunakan untuk menghapus data. Pemilihan URI, makna metode HTTP, status respons, dan batasan arsitektur tetap penting. Proyek ini mengikuti pola resource dan metode HTTP dari tugas serta menggunakan SessionAuthentication; penggunaan session tidak otomatis membuktikan pemenuhan seluruh batasan REST secara ketat.
+    PUT digunakan untuk mengirim representasi pengganti secara lengkap, misalnya memperbarui seluruh field Experience yang dapat diedit. PATCH digunakan untuk perubahan sebagian, misalnya mengirim {"title": "Backend Developer"} untuk mengubah judul saja. Pada implementasi ini, PATCH memakai partial=True; PUT tetap memerlukan field wajib serializer. Field read-only seperti ID dan waktu pembuatan tidak perlu dikirim. PUT bersifat idempotent; sifat idempotent PATCH bergantung pada operasi yang dilakukan.
+
+2. Peran serializer dan perbedaannya dengan JsonResponse manual
+    Serializer mengubah objek model menjadi tipe data Python yang dapat dirender menjadi JSON. Pada arah sebaliknya, serializer memvalidasi input, menyediakan validated_data, dan dapat menyimpan data yang valid melalui .save().
+    ModelSerializer membantu membentuk field dan operasi create/update berdasarkan model. Dalam ExperienceSerializer, field ditulis eksplisit, judul dan deskripsi dibersihkan serta divalidasi, sementara jumlah dan status star dihitung sebagai field read-only. Pembersihan tag tetap dilengkapi penanganan output yang aman di frontend.
+    Dibandingkan menyusun dictionary secara manual untuk JsonResponse, serializer menyatukan aturan representasi dan validasi agar dapat digunakan ulang. JsonResponse membantu menghasilkan respons JSON, tetapi aturan validasi, field read-only, dan penyimpanan harus ditangani sendiri. Serializer juga menyediakan pesan kesalahan terstruktur untuk ditampilkan pada form.
+
+3. Autentikasi, otorisasi, dan pemeriksaan di server
+    Autentikasi menentukan siapa pengguna yang mengirim permintaan. Pada proyek ini, SessionAuthentication menggunakan session login untuk mengenali pengguna. Otorisasi menentukan tindakan yang boleh dilakukan pengguna tersebut.
+    Permission class mengizinkan semua pengunjung membaca, pengguna login memberi star, Editor mengedit, dan superuser melakukan seluruh operasi. Endpoint star menggunakan IsAuthenticated, dan pemberi star selalu diambil dari request.user.
+    Menyembunyikan tombol hanya mengatur antarmuka. Pengguna masih dapat mengirim permintaan langsung ke API melalui alat lain. Karena itu, permission harus diperiksa di server sebelum data diubah. Pengujian juga memeriksa database agar penolakan tidak hanya menghasilkan status 403, tetapi benar-benar tidak mengubah data.
+
+4. SessionAuthentication, CSRF, dan pengujian
+    Browser dapat menyertakan cookie session secara otomatis pada permintaan yang memenuhi aturan cookie. Hal ini menimbulkan risiko CSRF: situs lain dapat mencoba membuat browser pengguna mengirim tindakan dengan session pengguna tersebut.
+    Untuk permintaan yang mengubah data, token CSRF membantu server memverifikasi permintaan selain hanya mengandalkan cookie login. Pada proyek ini, token dari template dikirim melalui header X-CSRFToken saat POST, PATCH, dan DELETE; PUT juga memerlukan token ketika menggunakan session.
+    force_authenticate() menetapkan pengguna secara langsung untuk memudahkan tes permission dan melewati proses autentikasi normal. Karena itu, tes tersebut tidak cukup untuk membuktikan perlindungan CSRF. Pengujian CSRF menggunakan login session dengan .login() dan client yang mengaktifkan pemeriksaan CSRF, kemudian membandingkan permintaan tanpa token dan dengan token valid.
+
+AI Disclosure:
+    Dalam tugas 6 ini , saya menggunakan bantuan generative AI (Chat GPT ) untuk membantu saya dalam menyelesaikannya. Saya meminta bantuan kepada generative AI saat menyusun serializer dan API Experience, penerapan permission, integrasi fetch dan modal, bug fixing, failed test diagnosis dan menyusun tests pada API nya. Apa yang saya lakukan tidak hanya langsung copy paste saja, tetapi juga menjalankan pengujian perbandingan hasil dari code saya dengan code dari generative AI, setelah itu saya membahas tentang perbandingan code nya.
+    Beberapa prompt yang saya gunakan :
+    - "oke masih ada error pada bagian test nya, di bagian mana error tersebut ada berdasarkan screenshoot ku? Beritahu aku kesalahannya dan apa yang harus ku lakukan."
+    - "tolong fix bagian code yang seharusnya di ganti menyesuaikan modul ku, lalu berikan penjelasannya kenapa bagian tersebut di ganti/ditambahkan."
